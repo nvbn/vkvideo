@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1
+Name=VKvideo
+GenericName=VKvideo
+Comment=VKvideo authorisation
+Comment[ru]=Авторизация vkvideo
+Exec=vkvideo
+Terminal=false
+Icon=vkvideo.png
+Type=Application
+Categories=Network;

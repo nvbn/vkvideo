@@ -1,0 +1,11 @@
+[Lens]
+DBusName=net.launchpad.Unity.Lens.VKvideo
+DBusPath=/net/launchpad/unity/lens/vkvideo
+Name=vklens
+Icon=vkvideo
+Description=VK video lens
+SearchHint=Search vkvideo
+Shortcut=k
+
+[Desktop Entry]
+X-Ubuntu-Gettext-Domain=unity-lens-vkvideoээ
