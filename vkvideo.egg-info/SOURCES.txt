@@ -8,11 +8,14 @@ locale/ru
 locale/ru/LC_MESSAGES
 locale/ru/LC_MESSAGES/vklens.mo
 locale/ru/LC_MESSAGES/vklensauth.mo
+locale/ru/LC_MESSAGES/vksettings.mo
 locale/ru/LC_MESSAGES/vklens.po
 locale/ru/LC_MESSAGES/vklensauth.po
+locale/ru/LC_MESSAGES/vksettings.po
 vkvideo/__init__.py
 vkvideo/auth.py
 vkvideo/lens.py
+vkvideo/settings.py
 vkvideo.egg-info/PKG-INFO
 vkvideo.egg-info/SOURCES.txt
 vkvideo.egg-info/dependency_links.txt

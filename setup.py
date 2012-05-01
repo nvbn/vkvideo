@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '4692'
+version = '3'
 
 setup(name='vkvideo',
       version=version,
@@ -24,6 +24,7 @@ setup(name='vkvideo',
         'console_scripts': [
           'vkvideo=vkvideo.auth:main',
           'vklens=vkvideo.lens:main',
+          'vksettings=vkvideo.settings:main',
         ]
       },
       data_files=[

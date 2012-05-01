@@ -8,6 +8,7 @@ import re
 import subprocess
 import gettext
 import os
+import gconf
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'locale')
 if not os.path.isdir(path):
@@ -80,6 +81,7 @@ class VKScope(object):
         self.model = None
         self.count = 20
         self._vk = None
+        self.settings = gconf.client_get_default()
         self.scope = Unity.Scope.new("/net/launchpad/unity/scope/vkvideo")
         self.scope.connect("activate_uri", self.on_uri_activated)
         self.scope.connect("filters-changed", self.on_filter_changed)
@@ -137,20 +139,27 @@ class VKScope(object):
                 'vkvideo', 1, 'image/png',
                 _('Authorisation'), _('Settings'),
             "")
+            model.append('vksettings',
+                'vkvideo', 1, 'image/png',
+                _('Settings'), _('Settings'),
+            "")
 
     def on_uri_activated(self, scope, uri):
         """Uri activated event"""
         handled = Unity.ActivationResponse(handled=Unity.HandledType.HIDE_DASH, goto_uri=uri)
-        if uri == 'vkvideo':
-            subprocess.Popen(['vkvideo'])
+        if uri in ('vkvideo', 'vksettings'):
+            subprocess.Popen([uri])
         elif self.vk:
             data = urllib.urlopen(uri).read()
             vars = re.search('flashvars=(.*)&amp;ltag', data).group(1)
             vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
-            url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%d.mp4'
-            for quality in [720, 480, 360, 240]:
+            url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
+            max_quality = self.settings.get_string('/apps/unity-vkvideo-lens/quality') or '720'
+            qualitys = ['720', '480', '360', '240']
+            for quality in qualitys[qualitys.index(max_quality):]:
                 if urllib.urlopen(url % quality).code == 200:
-                    subprocess.Popen(['totem', url % quality])
+                    player = self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem'
+                    subprocess.Popen(player.split(' ') + [url % quality])
                     break
         return handled
 

@@ -45,7 +45,7 @@ class AuthDialog(Gtk.Window):
 
 
 def main():
-    win = AuthDialog(title=_('authorise'))
+    win = AuthDialog(title=_('Authorise'))
     win.connect("delete-event", Gtk.main_quit)
     win.show_all()
     Gtk.main()
