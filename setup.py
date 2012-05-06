@@ -18,7 +18,7 @@ setup(name='vkvideo',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          "vkontakte"
       ],
       entry_points={
         'console_scripts': [
