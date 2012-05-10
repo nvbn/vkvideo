@@ -10,5 +10,5 @@ Homepage: https://github.com/nvbn/vkvideo/
 
 Package: vkvideo
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-gobject, python-gi, python-keyring
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-gobject, python-gi, python-keyring, python-support
 Description: VK video lens

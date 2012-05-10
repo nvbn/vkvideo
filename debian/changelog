@@ -1,3 +1,10 @@
+vkvideo (4-0~precise) precise; urgency=low
+
+  * Full name view in vertical tile
+  * Fix python-support error
+
+ -- Vladimir Yakovlev <nvbn.rm@gmail.com>  Sun, 11 May 2012 02:35:12 +0400
+
 vkvideo (3-0~precise) precise; urgency=low
 
   * Add settings

@@ -43,24 +43,18 @@ class Daemon(object):
         icon = Gio.ThemedIcon.new("/usr/share/icons/unity-icon-theme/places/svg/group-recent.svg")
         self.lens.props.categories = [
             Unity.Category.new(_("Videos"), category_icon,
-                Unity.CategoryRenderer.VERTICAL_TILE,
+                Unity.CategoryRenderer.HORIZONTAL_TILE,
             ), Unity.Category.new(_("Settings"), category_icon,
                 Unity.CategoryRenderer.VERTICAL_TILE,
             ),
         ]
-        quality = Unity.RadioOptionFilter.new('quality', _('quality'), icon,
-            Unity.CategoryRenderer.VERTICAL_TILE,
-        )
+        quality = Unity.RadioOptionFilter.new('quality', _('quality'), icon, True)
         quality.add_option('with_low', _('with low'), icon)
-        sort = Unity.RadioOptionFilter.new('sorting', _('sorting'), icon,
-            Unity.CategoryRenderer.VERTICAL_TILE,
-        )
+        sort = Unity.RadioOptionFilter.new('sorting', _('sorting'), icon, True)
         sort.add_option('0', _('by date'), icon)
         sort.add_option('1', _('by length'), icon)
         sort.add_option('2', _('by rel'), icon)
-        count = Unity.RadioOptionFilter.new('count', _('count'), icon,
-            Unity.CategoryRenderer.HORIZONTAL_TILE,
-        )
+        count = Unity.RadioOptionFilter.new('count', _('count'), icon, True)
         count.add_option('20', '20', icon)
         count.add_option('50', '50', icon)
         count.add_option('100', '100', icon)
@@ -131,18 +125,18 @@ class VKScope(object):
                     ):
                         model.append(entry['player'],
                             entry['thumb'], 0, "video/mp4",
-                            entry['title'], _("Videos"),
-                        "")
+                            entry['title'], "",
+                        entry['player'])
                 except Exception:  # Prevent apport errors
                     pass
             model.append('vkvideo',
                 'vkvideo', 1, 'image/png',
-                _('Authorisation'), _('Settings'),
-            "")
+                _('Authorisation'), "",
+            "vkvideo")
             model.append('vksettings',
                 'vkvideo', 1, 'image/png',
-                _('Settings'), _('Settings'),
-            "")
+                _('Settings'), "",
+            "vksettings")
 
     def on_uri_activated(self, scope, uri):
         """Uri activated event"""
