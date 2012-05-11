@@ -12,6 +12,9 @@ locale/ru/LC_MESSAGES/vksettings.mo
 locale/ru/LC_MESSAGES/vklens.po
 locale/ru/LC_MESSAGES/vklensauth.po
 locale/ru/LC_MESSAGES/vksettings.po
+vkontakte/__init__.py
+vkontakte/api.py
+vkontakte/http.py
 vkvideo/__init__.py
 vkvideo/auth.py
 vkvideo/lens.py
