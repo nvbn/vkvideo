@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from gi.repository import GLib, GObject, Gio, Unity
+from gi.repository import GLib, GObject, Gio, Unity, GConf
 from functools import wraps
 import vkontakte
 import keyring
@@ -8,7 +8,6 @@ import re
 import subprocess
 import gettext
 import os
-import gconf
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'locale')
 if not os.path.isdir(path):
@@ -75,7 +74,7 @@ class VKScope(object):
         self.model = None
         self.count = 20
         self._vk = None
-        self.settings = gconf.client_get_default()
+        self.settings = GConf.Client.get_default()
         self.scope = Unity.Scope.new("/net/launchpad/unity/scope/vkvideo")
         self.scope.connect("activate_uri", self.on_uri_activated)
         self.scope.connect("filters-changed", self.on_filter_changed)

@@ -1,7 +1,6 @@
-from gi.repository import Gtk, Notify
+from gi.repository import Gtk, Notify, GConf
 import os
 import gettext
-import gconf
 
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'locale')
@@ -23,7 +22,7 @@ class SettingsDialog(Gtk.Dialog):
     def __init__(self, *args, **kwargs):
         """Open settings dialog"""
         super(SettingsDialog, self).__init__(*args, **kwargs)
-        self.settings = gconf.client_get_default()
+        self.settings = GConf.Client.get_default()
         self.set_default_size(150, 100)
         box = self.get_content_area()
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
