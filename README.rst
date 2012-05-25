@@ -13,4 +13,8 @@ For ubuntu user `ppa <https://launchpad.net/~nvbn-rm/+archive/ppa>`_:
 
 ``apt-get install vkvideo`` 
 
+And restart unity:
+
+``unity --replace``
+
 Developers can clone this repository and install via ``setup.py``
