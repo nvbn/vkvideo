@@ -1,6 +1,7 @@
 #!/usr/bin/python
-from gi.repository import GLib, GObject, Gio, Unity, GConf
+from gi.repository import GLib, GObject, Gio, Unity, GConf, Gdk
 from functools import wraps
+import collections
 import vkontakte
 import keyring
 import urllib
@@ -8,6 +9,9 @@ import re
 import subprocess
 import gettext
 import os
+import threading
+import time
+
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'locale')
 if not os.path.isdir(path):
@@ -27,6 +31,44 @@ def update_on_finish(fnc):
         finally:
             self.update_results_model()
     return wrapper
+
+
+def get_quality_urls(uri, max_quality):
+    data = urllib.urlopen(uri).read()
+    vars = re.search('flashvars=(.*)&amp;ltag', data).group(1)
+    vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
+    url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
+    qualitys = ['720', '480', '360', '240']
+    urls = map(lambda quality: (quality, url % quality),
+        qualitys[qualitys.index(max_quality):])
+    for quality, url in urls:
+        if urllib.urlopen(url).code == 200:
+            break
+        else:
+            urls.remove((quality, url))
+    return urls
+
+
+class ActionIdle(object):
+    def __init__(self):
+        self.open_queue = collections.deque()
+        GObject.timeout_add(1000, self.run)
+
+    def open(self, uri, max_quality, player):
+        self.open_queue.append((
+            uri, max_quality, player,
+        ))
+
+    def run(self):
+        try:
+            uri, max_quality, player = self.open_queue.popleft()
+            print get_quality_urls(uri, max_quality)[0][0]
+            subprocess.Popen(player.split(' ') + [
+                get_quality_urls(uri, max_quality)[0][1],
+            ])
+        except IndexError:
+            pass
+        GObject.timeout_add(1000, self.run)
 
 
 class Daemon(object):
@@ -80,6 +122,7 @@ class VKScope(object):
         self.scope.connect("filters-changed", self.on_filter_changed)
         self.scope.connect("search-changed", self.on_search_changed)
         self.scope.export()
+        self.action_idle = ActionIdle()
 
     @property
     def vk(self):
@@ -143,17 +186,10 @@ class VKScope(object):
         if uri in ('vkvideo', 'vksettings'):
             subprocess.Popen([uri])
         elif self.vk:
-            data = urllib.urlopen(uri).read()
-            vars = re.search('flashvars=(.*)&amp;ltag', data).group(1)
-            vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
-            url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
-            max_quality = self.settings.get_string('/apps/unity-vkvideo-lens/quality') or '720'
-            qualitys = ['720', '480', '360', '240']
-            for quality in qualitys[qualitys.index(max_quality):]:
-                if urllib.urlopen(url % quality).code == 200:
-                    player = self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem'
-                    subprocess.Popen(player.split(' ') + [url % quality])
-                    break
+            self.action_idle.open(uri,
+                self.settings.get_string('/apps/unity-vkvideo-lens/quality') or '720',
+                self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem',
+            )
         return handled
 
 
