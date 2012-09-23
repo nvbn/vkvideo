@@ -1,3 +1,10 @@
+vkvideo (6-0~precise) precise; urgency=low
+
+  * Fix locks
+  * Previews support
+
+ -- Vladimir Yakovlev <nvbn.rm@gmail.com>  Sun, 23 Sep 2012 21:55:00 +0400
+
 vkvideo (5-0~precise) precise; urgency=low
 
   * Static vkontakte

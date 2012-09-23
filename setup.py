@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '3'
+version = '6'
 
 setup(name='vkvideo',
       version=version,

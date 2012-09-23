@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from gi.repository import GLib, GObject, Gio, Unity, GConf, Gdk
-from functools import wraps
+from functools import wraps, partial
 import collections
 import vkontakte
 import keyring
@@ -33,20 +33,29 @@ def update_on_finish(fnc):
     return wrapper
 
 
-def get_quality_urls(uri, max_quality):
-    data = urllib.urlopen(uri).read()
-    vars = re.search('flashvars=(.*)&amp;ltag', data).group(1)
-    vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
-    url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
-    qualitys = ['720', '480', '360', '240']
-    urls = map(lambda quality: (quality, url % quality),
-        qualitys[qualitys.index(max_quality):])
-    for quality, url in urls:
-        if urllib.urlopen(url).code == 200:
-            break
-        else:
-            urls.remove((quality, url))
-    return urls
+class VideoPage(object):
+    def __init__(self, uri, max_quality=720):
+        data = urllib.urlopen(uri).read()
+        vars = re.search('flashvars=(.*)><', data).group(1)
+        vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
+        url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
+        qualitys = ['720', '480', '360', '240']
+
+        urls = map(lambda quality: (quality, url % quality),
+            qualitys[qualitys.index(max_quality):])
+        for quality, url in urls:
+            if urllib.urlopen(url).code == 200:
+                break
+            else:
+                urls.remove((quality, url))
+        self.thumb = vars['thumb']
+        self.urls = urls
+        self.title = urllib.unquote_plus(vars['md_title'])
+
+    def open(self, player, quality=0):
+        subprocess.Popen(player.split(' ') + [
+            self.urls[quality][1],
+        ])
 
 
 class ActionIdle(object):
@@ -62,10 +71,8 @@ class ActionIdle(object):
     def run(self):
         try:
             uri, max_quality, player = self.open_queue.popleft()
-            print get_quality_urls(uri, max_quality)[0][0]
-            subprocess.Popen(player.split(' ') + [
-                get_quality_urls(uri, max_quality)[0][1],
-            ])
+            page = VideoPage(uri, max_quality)
+            page.open(player)
         except IndexError:
             pass
         GObject.timeout_add(1000, self.run)
@@ -122,6 +129,7 @@ class VKScope(object):
         self.scope.connect("filters-changed", self.on_filter_changed)
         self.scope.connect("search-changed", self.on_search_changed)
         self.scope.export()
+        self.scope.connect('preview-uri', self.on_preview_uri)
         self.action_idle = ActionIdle()
 
     @property
@@ -191,6 +199,18 @@ class VKScope(object):
                 self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem',
             )
         return handled
+
+    def on_preview_uri(self, scope, uri):
+        page = VideoPage(url)
+        preview = Unity.GenericPreview.new(page.title, '', None)
+        preview.props.image_source_uri = page.thumb
+        for num, (quality, url) in enumerate(page.urls):
+            action = Unity.PreviewAction.new(quality, quality + 'p', None)
+            action.connect('activated', partial(page, 
+                self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem',
+            num))
+            preview.add_action(action)
+        return preview
 
 
 def main():
