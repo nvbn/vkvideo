@@ -43,13 +43,12 @@ class VideoPage(object):
 
         urls = map(lambda quality: (quality, url % quality),
             qualitys[qualitys.index(max_quality):])
-        for quality, url in urls:
+        for num, (quality, url) in enumerate(urls):
             if urllib.urlopen(url).code == 200:
+                results = urls[num + 1:]
                 break
-            else:
-                urls.remove((quality, url))
         self.thumb = vars['thumb']
-        self.urls = urls
+        self.urls = results
         self.title = urllib.unquote_plus(vars['md_title'])
 
     def open(self, player, quality=0):
