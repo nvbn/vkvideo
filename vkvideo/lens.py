@@ -33,6 +33,12 @@ def update_on_finish(fnc):
     return wrapper
 
 
+def open_uri(player, uri):
+    subprocess.Popen(player.split(' ') + [
+        uri,
+    ])
+
+
 class VideoPage(object):
     def __init__(self, uri, max_quality=720):
         data = urllib.urlopen(uri).read()
@@ -42,27 +48,26 @@ class VideoPage(object):
         qualitys = ['720', '480', '360', '240']
 
         urls = map(lambda quality: (quality, url % quality),
-            qualitys[qualitys.index(max_quality):])
+            qualitys[qualitys.index(str(max_quality)):])
         for num, (quality, url) in enumerate(urls):
             if urllib.urlopen(url).code == 200:
-                results = urls[num + 1:]
+                results = urls[num:]
                 break
         self.thumb = vars['thumb']
         self.urls = results
         self.title = urllib.unquote_plus(vars['md_title'])
 
     def open(self, player, quality=0):
-        subprocess.Popen(player.split(' ') + [
-            self.urls[quality][1],
-        ])
+        open_uri(player, self.urls[quality][1])
 
 
 class ActionIdle(object):
     def __init__(self):
         self.open_queue = collections.deque()
+        self.page_queue = collections.deque()
         GObject.timeout_add(1000, self.run)
 
-    def open(self, uri, max_quality, player):
+    def open(self, uri, max_quality, player, *args):
         self.open_queue.append((
             uri, max_quality, player,
         ))
@@ -70,8 +75,11 @@ class ActionIdle(object):
     def run(self):
         try:
             uri, max_quality, player = self.open_queue.popleft()
-            page = VideoPage(uri, max_quality)
-            page.open(player)
+            if max_quality == -1:
+                open_uri(player, uri)
+            else:
+                page = VideoPage(uri, max_quality)
+                page.open(player)
         except IndexError:
             pass
         GObject.timeout_add(1000, self.run)
@@ -167,12 +175,13 @@ class VKScope(object):
             model.clear()
             if self.vk:
                 try:
-                    for entry in self.vk.get(
+                    self._last_result = self.vk.get(
                         'video.search', q=self.search_string,
                         hd=self.only_hd, sort=self.sorting,
                         count=self.count,
-                    ):
-                        model.append(entry['player'],
+                    )
+                    for num, entry in enumerate(self._last_result):
+                        model.append(str(num),
                             entry['thumb'], 0, "video/mp4",
                             entry['title'], "",
                         entry['player'])
@@ -189,6 +198,7 @@ class VKScope(object):
 
     def on_uri_activated(self, scope, uri):
         """Uri activated event"""
+        uri = self._last_result[int(uri)]['player']
         handled = Unity.ActivationResponse(handled=Unity.HandledType.HIDE_DASH, goto_uri=uri)
         if uri in ('vkvideo', 'vksettings'):
             subprocess.Popen([uri])
@@ -200,16 +210,23 @@ class VKScope(object):
         return handled
 
     def on_preview_uri(self, scope, uri):
-        page = VideoPage(url)
-        preview = Unity.GenericPreview.new(page.title, '', None)
+        description = self._last_result[int(uri)]['description']
+        uri = self._last_result[int(uri)]['player']
+        page = VideoPage(uri)
+        preview = Unity.GenericPreview.new(page.title, description, None)
         preview.props.image_source_uri = page.thumb
         for num, (quality, url) in enumerate(page.urls):
             action = Unity.PreviewAction.new(quality, quality + 'p', None)
-            action.connect('activated', partial(page, 
+            action.connect('activated', partial(self.from_preview, url, -1,
                 self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem',
-            num))
+            ))
             preview.add_action(action)
         return preview
+
+    def from_preview(self, *args):
+        handled = Unity.ActivationResponse(handled=Unity.HandledType.HIDE_DASH)
+        self.action_idle.open(*args)
+        return handled
 
 
 def main():
