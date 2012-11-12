@@ -44,7 +44,7 @@ class VideoPage(object):
         data = urllib.urlopen(uri).read()
         vars = re.search('flashvars=(.*)><', data).group(1)
         vars = dict(map(lambda part: part.split('='), vars.split('&amp;')))
-        url = vars['host'] + 'u' + vars['uid'] + '/' + 'video' + '/' + vars['vtag'] + '.%s.mp4'
+        url = vars['host'] + 'u' + vars['uid'] + '/' + 'videos' + '/' + vars['vtag'] + '.%s.mp4'
         qualitys = ['720', '480', '360', '240']
 
         urls = map(lambda quality: (quality, url % quality),
