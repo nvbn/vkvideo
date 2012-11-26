@@ -1,3 +1,10 @@
+vkvideo (9-0~precise) precise; urgency=low
+
+  * Fix new urls
+  * Fix settings and authorisation
+
+ -- Vladimir Yakovlev <nvbn.rm@gmail.com>  Mon, 26 Nov 2012 05:24:15 +0400
+
 vkvideo (8-0~precise) precise; urgency=low
 
   * Fix previews

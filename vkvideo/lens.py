@@ -198,11 +198,11 @@ class VKScope(object):
 
     def on_uri_activated(self, scope, uri):
         """Uri activated event"""
-        uri = self._last_result[int(uri)]['player']
         handled = Unity.ActivationResponse(handled=Unity.HandledType.HIDE_DASH, goto_uri=uri)
         if uri in ('vkvideo', 'vksettings'):
             subprocess.Popen([uri])
         elif self.vk:
+            uri = self._last_result[int(uri)]['player']
             self.action_idle.open(uri,
                 self.settings.get_string('/apps/unity-vkvideo-lens/quality') or '720',
                 self.settings.get_string('/apps/unity-vkvideo-lens/player') or 'totem',
