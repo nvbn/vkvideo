@@ -1,68 +1,68 @@
-vkvideo (11-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (11-0~{{ release }}) {{ release }}; urgency=low
 
   * Add 13.04 support
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Wed, 21 Aug 2013 00:42:11 +0400
 
-vkvideo (10-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (10-0~{{ release }}) {{ release }}; urgency=low
 
   * Remove static vkontakte library
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Mon, 4 Mar 2013 22:43:11 +0400
 
-vkvideo (9-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (9-0~{{ release }}) {{ release }}; urgency=low
 
   * Fix new urls
   * Fix settings and authorisation
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Mon, 26 Nov 2012 05:24:15 +0400
 
-vkvideo (8-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (8-0~{{ release }}) {{ release }}; urgency=low
 
   * Fix previews
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sat, 21 Oct 2012 22:32:00 +0400
 
-vkvideo (7-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (7-0~{{ release }}) {{ release }}; urgency=low
 
   * Fix package
   * Fix access denied
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sat, 20 Sep 2012 03:44:00 +0400
 
-vkvideo (6-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (6-0~{{ release }}) {{ release }}; urgency=low
 
   * Fix locks
   * Previews support
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sun, 23 Sep 2012 21:55:00 +0400
 
-vkvideo (5-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (5-0~{{ release }}) {{ release }}; urgency=low
 
   * Static vkontakte
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sun, 11 May 2012 23:12:24 +0400
 
-vkvideo (4-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (4-0~{{ release }}) {{ release }}; urgency=low
 
   * Full name view in vertical tile
   * Fix python-support error
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sun, 11 May 2012 02:35:12 +0400
 
-vkvideo (3-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (3-0~{{ release }}) {{ release }}; urgency=low
 
   * Add settings
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sun, 1 May 2012 19:20:08 +0400
 
-vkvideo (2-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (2-0~{{ release }}) {{ release }}; urgency=low
 
   * Fix packaging
 
  -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Sun, 30 Apr 2012 01:45:19 +0400
 
-vkvideo (1-0~{{ relese }}) {{ relese }}; urgency=low
+vkvideo (1-0~{{ release }}) {{ release }}; urgency=low
 
   * Initial release
 
