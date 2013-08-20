@@ -1,3 +1,9 @@
+vkvideo (11-0~{{ relese }}) {{ relese }}; urgency=low
+
+  * Add 13.04 support
+
+ -- Vladimir Iakovlev <nvbn.rm@gmail.com>  Wed, 21 Aug 2013 00:42:11 +0400
+
 vkvideo (10-0~{{ relese }}) {{ relese }}; urgency=low
 
   * Remove static vkontakte library
